@@ -97,7 +97,7 @@
     }
     .cta:hover { opacity: 0.9; transform: translateY(-1px); }
 
-    /* Shared tile component (used by destinations + occasions) */
+    /* Shared tile component */
     .tile {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 6px; overflow: hidden; cursor: pointer;
@@ -126,7 +126,7 @@
     @media (max-width: 1000px) { .tile-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 600px)  { .tile-grid { grid-template-columns: 1fr; } }
 
-    /* Occasion grid — 5 across on desktop */
+    /* Occasion grid */
     .occasion-grid {
       display: grid; grid-template-columns: repeat(5, 1fr);
       gap: 0.85rem; max-width: 1100px; margin: 0 auto;
@@ -169,7 +169,6 @@
       outline: none; cursor: grab; margin: 0; padding: 0;
     }
     .budget-slider:active { cursor: grabbing; }
-
     .budget-slider::-webkit-slider-runnable-track {
       height: 1px;
       background: linear-gradient(to right, rgba(var(--accent-rgb), 0.5) 0%, rgba(var(--accent-rgb), 0.5) var(--pct, 0%), var(--border) var(--pct, 0%), var(--border) 100%);
@@ -177,7 +176,6 @@
     }
     .budget-slider::-moz-range-track { height: 1px; background: var(--border); border: none; }
     .budget-slider::-moz-range-progress { height: 1px; background: rgba(var(--accent-rgb), 0.5); }
-
     .budget-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 14px; height: 14px; border-radius: 50%;
@@ -202,7 +200,6 @@
       box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.6), 0 0 0 12px rgba(var(--accent-rgb), 0.12);
       transform: scale(1.1);
     }
-
     .slider-rail-labels {
       display: flex; justify-content: space-between; margin-top: 1rem;
       font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.35;
@@ -239,6 +236,94 @@
     .guest-chip-label {
       font-size: 0.65rem; letter-spacing: 0.4em; text-transform: uppercase;
       opacity: 0.6; margin-top: 0.75rem;
+    }
+
+    /* Register step — underline-only form */
+    .register-form {
+      max-width: 480px;
+      margin: 1rem auto 0;
+      text-align: left;
+    }
+    .field {
+      margin-bottom: 2.25rem;
+    }
+    .field label.field-label {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 0.5rem;
+    }
+    .field label.field-label .optional {
+      letter-spacing: 0.1em;
+      opacity: 0.7;
+      text-transform: none;
+      font-style: italic;
+      font-size: 0.85em;
+    }
+    .field input.input-line {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 300;
+      padding: 0.4rem 0;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .field input.input-line:focus {
+      border-bottom-color: var(--accent);
+    }
+    .field input.input-line::placeholder { opacity: 0.25; font-style: italic; }
+    .field input.input-line:-webkit-autofill {
+      -webkit-text-fill-color: var(--text);
+      -webkit-box-shadow: 0 0 0 1000px var(--bg) inset;
+      caret-color: var(--text);
+    }
+
+    .photo-field {
+      text-align: center;
+      margin: 2.5rem 0 2.5rem;
+    }
+    .photo-label {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+    .photo-circle {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      border: 1px dashed var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      background-size: cover; background-position: center;
+      transition: border-color 0.3s ease, color 0.3s ease;
+    }
+    .photo-label:hover .photo-circle {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .photo-circle.has-photo {
+      border-style: solid;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.1);
+    }
+    .photo-circle.has-photo .photo-icon { display: none; }
+    .photo-text {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+    .register-submit {
+      margin-top: 1rem;
+      text-align: center;
     }
   </style>
 </head>
@@ -308,9 +393,42 @@
       </section>
 
       <section class="step" data-step="6">
-        <h2>Your details</h2>
-        <p>Coming soon</p>
-        <button class="cta" onclick="advance()">Next</button>
+        <h2 id="register-title">Your details</h2>
+        <div class="prompt" id="register-prompt">We'll tailor everything to you</div>
+
+        <form class="register-form" id="register-form" onsubmit="commitRegister(event)" novalidate>
+          <div class="field">
+            <label class="field-label" for="reg-name">Full name</label>
+            <input class="input-line" type="text" id="reg-name" name="fullName" required autocomplete="name" placeholder="Your name">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="reg-email">Email</label>
+            <input class="input-line" type="email" id="reg-email" name="email" required autocomplete="email" placeholder="you@somewhere.com">
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="reg-phone">Phone <span class="optional">— optional</span></label>
+            <input class="input-line" type="tel" id="reg-phone" name="phone" autocomplete="tel" placeholder="+971 …">
+          </div>
+
+          <div class="photo-field">
+            <label class="photo-label" for="reg-photo">
+              <div class="photo-circle" id="photo-preview">
+                <svg class="photo-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+              </div>
+              <span class="photo-text" id="photo-text">Add a photo — optional</span>
+            </label>
+            <input type="file" id="reg-photo" name="photo" accept="image/*" capture="user" style="display:none">
+          </div>
+
+          <div class="register-submit">
+            <button type="submit" class="cta" id="register-submit-btn">Complete</button>
+          </div>
+        </form>
       </section>
 
       <section class="step" data-step="7">
@@ -334,7 +452,19 @@
       document.getElementById('step-pill').textContent = `Step ${currentStep} of ${totalSteps}`;
     }
     function advance() { if (currentStep < totalSteps) showStep(currentStep + 1); }
-    function restart() { window.WIZARD_STATE = {}; showStep(1); }
+    function restart() {
+      window.WIZARD_STATE = {};
+      const form = document.getElementById('register-form');
+      if (form) form.reset();
+      const preview = document.getElementById('photo-preview');
+      if (preview) {
+        preview.style.backgroundImage = '';
+        preview.classList.remove('has-photo');
+      }
+      const photoText = document.getElementById('photo-text');
+      if (photoText) photoText.textContent = 'Add a photo — optional';
+      showStep(1);
+    }
 
     function selectDestination(value) {
       window.WIZARD_STATE.location = value;
@@ -434,6 +564,43 @@
       advance();
     }
 
+    function setupRegister(cfg) {
+      const photoInput = document.getElementById('reg-photo');
+      const preview = document.getElementById('photo-preview');
+      const photoText = document.getElementById('photo-text');
+      const submitBtn = document.getElementById('register-submit-btn');
+
+      if (cfg.stepLabels?.register?.submit) {
+        submitBtn.textContent = cfg.stepLabels.register.submit;
+      }
+
+      photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          preview.style.backgroundImage = `url('${ev.target.result}')`;
+          preview.classList.add('has-photo');
+          photoText.textContent = 'Tap to change';
+          window.WIZARD_STATE.photo = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function commitRegister(event) {
+      event.preventDefault();
+      const form = event.target;
+      const name = form.fullName.value.trim();
+      const email = form.email.value.trim();
+      if (!name || !email) return;
+
+      window.WIZARD_STATE.fullName = name;
+      window.WIZARD_STATE.email = email;
+      window.WIZARD_STATE.phone = form.phone.value.trim();
+      advance();
+    }
+
     if (demoKey) {
       const script = document.createElement('script');
       script.src = `./configs/${demoKey.toLowerCase()}.js`;
@@ -468,11 +635,16 @@
           document.getElementById('occasion-title').textContent = cfg.stepLabels.occasion.title;
           document.getElementById('occasion-prompt').textContent = cfg.stepLabels.occasion.prompt;
         }
+        if (cfg.stepLabels?.register) {
+          document.getElementById('register-title').textContent = cfg.stepLabels.register.title;
+          document.getElementById('register-prompt').textContent = cfg.stepLabels.register.prompt;
+        }
 
         renderDestinations(cfg);
         setupBudget(cfg);
         renderGuests(cfg);
         renderOccasions(cfg);
+        setupRegister(cfg);
 
         document.body.classList.add('wizard-mode');
       };
