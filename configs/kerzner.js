@@ -1,7 +1,7 @@
 // Kerzner — Travel & Hospitality brand config
 window.BRAND_CONFIG = {
   demoKey: "KERZNER",
-  relayUrl: "wss://real-estate-live-demo.onrender.com/ws",
+  relayUrl: "wss://travel-hospitality-relay.onrender.com/ws",
   brand: {
     name: "Kerzner",
     tagline: "One Guest. Every Sanctuary.",
