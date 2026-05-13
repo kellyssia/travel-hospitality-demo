@@ -124,7 +124,7 @@
     }
     .tile-sub { font-size: 0.75rem; opacity: 0.5; letter-spacing: 0.1em; text-transform: uppercase; }
 
-    /* ─── BUDGET STEP — luxury hero treatment ─── */
+    /* Budget step */
     .budget-stage {
       max-width: 720px;
       margin: 0 auto;
@@ -202,7 +202,6 @@
       height: 1px;
       background: rgba(var(--accent-rgb), 0.5);
     }
-
     .budget-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 14px; height: 14px;
@@ -245,6 +244,63 @@
       letter-spacing: 0.2em;
       text-transform: uppercase;
       opacity: 0.35;
+    }
+
+    /* Guests step — five serif numerals */
+    .guests-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: clamp(1.5rem, 7vw, 5rem);
+      flex-wrap: wrap;
+      margin: 1rem auto 3.5rem;
+      max-width: 900px;
+    }
+    .guest-chip {
+      background: transparent;
+      border: none;
+      padding: 0.5rem 0.25rem 1rem;
+      cursor: pointer;
+      color: var(--text);
+      font-family: var(--sans);
+      text-align: center;
+      opacity: 0.45;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      position: relative;
+    }
+    .guest-chip::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0.25rem;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s ease, left 0.3s ease;
+    }
+    .guest-chip:hover {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+    .guest-chip:hover::after {
+      width: 60%;
+      left: 20%;
+    }
+    .guest-chip-number {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(3rem, 7vw, 4.5rem);
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-feature-settings: "tnum";
+    }
+    .guest-chip-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-top: 0.75rem;
     }
   </style>
 </head>
@@ -306,9 +362,9 @@
       </section>
 
       <section class="step" data-step="4">
-        <h2>Number of guests</h2>
-        <p>Coming soon</p>
-        <button class="cta" onclick="advance()">Next</button>
+        <h2 id="guests-title">How many guests?</h2>
+        <div class="prompt" id="guests-prompt">Staying with you</div>
+        <div class="guests-row" id="guests-row"></div>
       </section>
 
       <section class="step" data-step="5">
@@ -410,6 +466,22 @@
       advance();
     }
 
+    function renderGuests(cfg) {
+      const row = document.getElementById('guests-row');
+      if (!cfg.guestOptions) return;
+      row.innerHTML = cfg.guestOptions.map(g => `
+        <button class="guest-chip" onclick="selectGuests('${g.value}')">
+          <div class="guest-chip-number">${g.label}</div>
+          <div class="guest-chip-label">${g.description}</div>
+        </button>
+      `).join('');
+    }
+
+    function selectGuests(value) {
+      window.WIZARD_STATE.guests = value;
+      advance();
+    }
+
     if (demoKey) {
       const script = document.createElement('script');
       script.src = `./configs/${demoKey.toLowerCase()}.js`;
@@ -436,9 +508,14 @@
           document.getElementById('budget-title').textContent = cfg.stepLabels.budget.title;
           document.getElementById('budget-prompt').textContent = cfg.stepLabels.budget.prompt;
         }
+        if (cfg.stepLabels?.guests) {
+          document.getElementById('guests-title').textContent = cfg.stepLabels.guests.title;
+          document.getElementById('guests-prompt').textContent = cfg.stepLabels.guests.prompt;
+        }
 
         renderDestinations(cfg);
         setupBudget(cfg);
+        renderGuests(cfg);
 
         document.body.classList.add('wizard-mode');
       };
