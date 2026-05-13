@@ -5,49 +5,194 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Travel & Hospitality Demo</title>
   <style>
+    :root {
+      --bg: #0E1B2C;
+      --surface: #16263B;
+      --accent: #C9A961;
+      --text: #F0E9DD;
+      --text-muted: #9AA4B0;
+      --border: #243447;
+    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    /* Landing (when no ?demo= param) */
+    .landing {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      background: var(--bg, #0E1B2C);
-      color: var(--text, #F0E9DD);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 2rem;
       text-align: center;
-      transition: background 0.4s ease, color 0.4s ease;
     }
-    .stage { padding: 2rem; }
-    h1 {
-      color: var(--accent, #C9A961);
+    .landing h1 {
+      color: var(--accent);
       letter-spacing: 0.3em;
       font-weight: 300;
       margin: 0 0 0.75rem;
       font-size: clamp(2rem, 5vw, 3.5rem);
     }
-    .tagline { font-style: italic; opacity: 0.8; margin: 0 0 1.5rem; font-size: 1.1rem; }
-    .headline {
-      color: var(--accent, #C9A961);
-      margin: 0;
-      opacity: 0.6;
-      font-size: 0.8rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
+    .landing p { opacity: 0.6; margin: 0; }
+    .landing code { color: var(--accent); }
+
+    /* Wizard mode (when ?demo= is set) */
+    .wizard { display: none; }
+    body.wizard-mode .landing { display: none; }
+    body.wizard-mode .wizard { display: block; }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
     }
-    .hint { opacity: 0.6; margin: 0; }
-    code { color: var(--accent, #C9A961); }
+    .brand-info h1 {
+      color: var(--accent);
+      letter-spacing: 0.3em;
+      font-weight: 300;
+      margin: 0 0 0.25rem;
+      font-size: 1.1rem;
+    }
+    .brand-info .tagline {
+      opacity: 0.6;
+      font-style: italic;
+      margin: 0;
+      font-size: 0.85rem;
+    }
+    .header-status { display: flex; gap: 0.5rem; }
+    .status-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .status-pill.muted { color: var(--text-muted); }
+
+    main.steps {
+      padding: 3rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .step { display: none; text-align: center; padding: 2rem 0; }
+    .step.active { display: block; }
+    .step h2 {
+      color: var(--accent);
+      font-weight: 300;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      letter-spacing: 0.05em;
+      margin: 0 0 1rem;
+    }
+    .step p { opacity: 0.8; font-size: 1.05rem; margin: 0 0 2.5rem; }
+
+    .cta {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 1rem 3rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+    .cta:hover { opacity: 0.85; }
   </style>
 </head>
 <body>
-  <div class="stage" id="stage">
-    <h1 id="brand-name">TRAVEL &amp; HOSPITALITY DEMO</h1>
-    <p class="tagline" id="brand-tagline" hidden></p>
-    <p class="headline" id="brand-headline" hidden></p>
-    <p class="hint" id="hint">Add <code>?demo=KERZNER</code> to the URL to load a brand</p>
+  <!-- No-brand landing -->
+  <div class="landing" id="landing">
+    <div>
+      <h1>TRAVEL &amp; HOSPITALITY DEMO</h1>
+      <p>Add <code>?demo=KERZNER</code> to the URL to load a brand</p>
+    </div>
+  </div>
+
+  <!-- Brand wizard -->
+  <div class="wizard" id="wizard">
+    <header class="brand-header">
+      <div class="brand-info">
+        <h1 id="brand-name"></h1>
+        <p class="tagline" id="brand-tagline"></p>
+      </div>
+      <div class="header-status">
+        <div class="status-pill muted" id="ws-status">● Offline</div>
+        <div class="status-pill" id="step-pill">Step 1 of 7</div>
+      </div>
+    </header>
+
+    <main class="steps">
+      <section class="step active" data-step="1">
+        <h2 id="welcome-headline">Beyond Loyalty. Recognition.</h2>
+        <p>Tell us a little about your stay. We'll do the rest.</p>
+        <button class="cta" onclick="advance()">Begin</button>
+      </section>
+
+      <section class="step" data-step="2">
+        <h2>Destination</h2>
+        <p>Coming next step</p>
+        <button class="cta" onclick="advance()">Next</button>
+      </section>
+
+      <section class="step" data-step="3">
+        <h2>Budget per night</h2>
+        <p>Coming soon</p>
+        <button class="cta" onclick="advance()">Next</button>
+      </section>
+
+      <section class="step" data-step="4">
+        <h2>Number of guests</h2>
+        <p>Coming soon</p>
+        <button class="cta" onclick="advance()">Next</button>
+      </section>
+
+      <section class="step" data-step="5">
+        <h2>Occasion</h2>
+        <p>Coming soon</p>
+        <button class="cta" onclick="advance()">Next</button>
+      </section>
+
+      <section class="step" data-step="6">
+        <h2>Your details</h2>
+        <p>Coming soon</p>
+        <button class="cta" onclick="advance()">Next</button>
+      </section>
+
+      <section class="step" data-step="7">
+        <h2>Complete</h2>
+        <p>Your concierge will be in touch.</p>
+        <button class="cta" onclick="restart()">Start over</button>
+      </section>
+    </main>
   </div>
 
   <script>
     const demoKey = new URLSearchParams(window.location.search).get('demo');
+    let currentStep = 1;
+    const totalSteps = 7;
+
+    function showStep(n) {
+      document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+      currentStep = n;
+      document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+      document.getElementById('step-pill').textContent = `Step ${currentStep} of ${totalSteps}`;
+    }
+    function advance() { if (currentStep < totalSteps) showStep(currentStep + 1); }
+    function restart() { showStep(1); }
 
     if (demoKey) {
       const script = document.createElement('script');
@@ -58,23 +203,19 @@
 
         const root = document.documentElement.style;
         root.setProperty('--bg', cfg.theme.bg);
+        root.setProperty('--surface', cfg.theme.surface);
         root.setProperty('--text', cfg.theme.text);
+        root.setProperty('--text-muted', cfg.theme.textMuted);
         root.setProperty('--accent', cfg.theme.accent);
 
         document.getElementById('brand-name').textContent = cfg.brand.name.toUpperCase();
+        document.getElementById('brand-tagline').textContent = cfg.brand.tagline;
+        document.getElementById('welcome-headline').textContent = cfg.brand.headline;
 
-        const tagline = document.getElementById('brand-tagline');
-        tagline.textContent = cfg.brand.tagline;
-        tagline.hidden = false;
-
-        const headline = document.getElementById('brand-headline');
-        headline.textContent = cfg.brand.headline;
-        headline.hidden = false;
-
-        document.getElementById('hint').hidden = true;
+        document.body.classList.add('wizard-mode');
       };
       script.onerror = () => {
-        document.getElementById('hint').textContent = `Config not found for "${demoKey}"`;
+        document.querySelector('.landing p').textContent = `Config not found for "${demoKey}"`;
       };
       document.head.appendChild(script);
     }
