@@ -26,6 +26,10 @@ window.BRAND_CONFIG = {
     guests: {
       title: "How many guests?",
       prompt: "Staying with you"
+    },
+    occasion: {
+      title: "What's the occasion?",
+      prompt: "Pick the moment we're creating"
     }
   },
   destinations: [
@@ -59,5 +63,12 @@ window.BRAND_CONFIG = {
     { value: 3,    label: "3",  description: "guests" },
     { value: 4,    label: "4",  description: "guests" },
     { value: "5+", label: "5+", description: "guests" }
+  ],
+  occasions: [
+    { value: "Anniversary",      sublabel: "A celebration",   image: "./versions/kerzner/types/anniversary.jpg" },
+    { value: "Honeymoon",        sublabel: "Just married",    image: "./versions/kerzner/types/honeymoon.jpg" },
+    { value: "Family holiday",   sublabel: "All together",    image: "./versions/kerzner/types/family-holiday.jpg" },
+    { value: "Wellness retreat", sublabel: "Body and mind",   image: "./versions/kerzner/types/wellness-retreat.jpg" },
+    { value: "Business trip",    sublabel: "Work, refined",   image: "./versions/kerzner/types/business-trip.jpg" }
   ]
 };
