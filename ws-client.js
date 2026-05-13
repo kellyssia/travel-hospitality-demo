@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  const DEFAULT_RELAY_URL = "wss://real-estate-live-demo.onrender.com/ws";
+  const DEFAULT_RELAY_URL = "wss://travel-hospitality-relay.onrender.com/ws";
   const HEARTBEAT_INTERVAL_MS = 15000;
   const MAX_RECONNECT_DELAY_MS = 30000;
   const DEBUG = true; // set false to silence console logs
