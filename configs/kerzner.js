@@ -22,6 +22,10 @@ window.BRAND_CONFIG = {
       title: "What's your nightly budget?",
       prompt: "Slide to set the rate",
       perNight: "per night"
+    },
+    guests: {
+      title: "How many guests?",
+      prompt: "Staying with you"
     }
   },
   destinations: [
@@ -48,5 +52,12 @@ window.BRAND_CONFIG = {
       { max: 25000,    name: "Royal Suite" },
       { max: Infinity, name: "Royal Mansion" }
     ]
-  }
+  },
+  guestOptions: [
+    { value: 1,    label: "1",  description: "guest" },
+    { value: 2,    label: "2",  description: "guests" },
+    { value: 3,    label: "3",  description: "guests" },
+    { value: 4,    label: "4",  description: "guests" },
+    { value: "5+", label: "5+", description: "guests" }
+  ]
 };
