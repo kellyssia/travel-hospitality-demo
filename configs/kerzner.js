@@ -1,6 +1,7 @@
 // Kerzner — Travel & Hospitality brand config
 window.BRAND_CONFIG = {
   demoKey: "KERZNER",
+  relayUrl: "wss://real-estate-live-demo.onrender.com/ws",
   brand: {
     name: "Kerzner",
     tagline: "One Guest. Every Sanctuary.",
@@ -14,28 +15,11 @@ window.BRAND_CONFIG = {
     textMuted: "#9AA4B0"
   },
   stepLabels: {
-    destination: {
-      title: "Where would you like to escape to?",
-      prompt: "Choose your destination"
-    },
-    budget: {
-      title: "What's your nightly budget?",
-      prompt: "Slide to set the rate",
-      perNight: "per night"
-    },
-    guests: {
-      title: "How many guests?",
-      prompt: "Staying with you"
-    },
-    occasion: {
-      title: "What's the occasion?",
-      prompt: "Pick the moment we're creating"
-    },
-    register: {
-      title: "Your details",
-      prompt: "We'll tailor everything to you",
-      submit: "Complete"
-    }
+    destination: { title: "Where would you like to escape to?", prompt: "Choose your destination" },
+    budget:      { title: "What's your nightly budget?",        prompt: "Slide to set the rate", perNight: "per night" },
+    guests:      { title: "How many guests?",                    prompt: "Staying with you" },
+    occasion:    { title: "What's the occasion?",                prompt: "Pick the moment we're creating" },
+    register:    { title: "Your details",                         prompt: "We'll tailor everything to you", submit: "Complete" }
   },
   destinations: [
     { value: "Atlantis The Royal",      sublabel: "Dubai, UAE",   image: "./versions/kerzner/locations/atlantis-the-royal.jpg" },
@@ -49,11 +33,7 @@ window.BRAND_CONFIG = {
     { value: "Mazagan Beach & Golf",    sublabel: "Morocco",      image: "./versions/kerzner/locations/mazagan-beach-golf.jpg" }
   ],
   budget: {
-    min: 500,
-    max: 50000,
-    step: 100,
-    initial: 3000,
-    currency: "$",
+    min: 500, max: 50000, step: 100, initial: 3000, currency: "$",
     tiers: [
       { max: 1500,     name: "Suite" },
       { max: 3500,     name: "Signature Suite" },
