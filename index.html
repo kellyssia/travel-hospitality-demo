@@ -23,98 +23,93 @@
       transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* Landing (when no ?demo= param) */
     .landing {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem;
-      text-align: center;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 2rem; text-align: center;
     }
     .landing h1 {
-      color: var(--accent);
-      letter-spacing: 0.3em;
-      font-weight: 300;
-      margin: 0 0 0.75rem;
-      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--accent); letter-spacing: 0.3em; font-weight: 300;
+      margin: 0 0 0.75rem; font-size: clamp(2rem, 5vw, 3.5rem);
     }
     .landing p { opacity: 0.6; margin: 0; }
     .landing code { color: var(--accent); }
 
-    /* Wizard mode (when ?demo= is set) */
     .wizard { display: none; }
     body.wizard-mode .landing { display: none; }
     body.wizard-mode .wizard { display: block; }
 
     .brand-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.25rem 2rem;
-      border-bottom: 1px solid var(--border);
-      gap: 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); gap: 1rem;
     }
     .brand-info h1 {
-      color: var(--accent);
-      letter-spacing: 0.3em;
-      font-weight: 300;
-      margin: 0 0 0.25rem;
-      font-size: 1.1rem;
+      color: var(--accent); letter-spacing: 0.3em; font-weight: 300;
+      margin: 0 0 0.25rem; font-size: 1.1rem;
     }
-    .brand-info .tagline {
-      opacity: 0.6;
-      font-style: italic;
-      margin: 0;
-      font-size: 0.85rem;
-    }
+    .brand-info .tagline { opacity: 0.6; font-style: italic; margin: 0; font-size: 0.85rem; }
     .header-status { display: flex; gap: 0.5rem; }
     .status-pill {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      white-space: nowrap;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 0.35rem 0.9rem; border-radius: 999px;
+      font-size: 0.75rem; letter-spacing: 0.1em;
+      color: var(--accent); white-space: nowrap;
     }
     .status-pill.muted { color: var(--text-muted); }
 
-    main.steps {
-      padding: 3rem 2rem;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .step { display: none; text-align: center; padding: 2rem 0; }
+    main.steps { padding: 2.5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .step { display: none; text-align: center; padding: 1rem 0; }
     .step.active { display: block; }
     .step h2 {
-      color: var(--accent);
-      font-weight: 300;
+      color: var(--accent); font-weight: 300;
       font-size: clamp(1.5rem, 4vw, 2.5rem);
-      letter-spacing: 0.05em;
-      margin: 0 0 1rem;
+      letter-spacing: 0.05em; margin: 0 0 0.5rem;
     }
+    .step .prompt { opacity: 0.6; margin: 0 0 2rem; font-size: 0.95rem; letter-spacing: 0.1em; text-transform: uppercase; }
     .step p { opacity: 0.8; font-size: 1.05rem; margin: 0 0 2.5rem; }
 
     .cta {
-      background: var(--accent);
-      color: var(--bg);
-      border: none;
-      padding: 1rem 3rem;
-      font-size: 0.9rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      cursor: pointer;
-      border-radius: 4px;
-      font-weight: 600;
-      transition: opacity 0.2s ease;
+      background: var(--accent); color: var(--bg); border: none;
+      padding: 1rem 3rem; font-size: 0.9rem;
+      letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
+      border-radius: 4px; font-weight: 600; transition: opacity 0.2s ease;
     }
     .cta:hover { opacity: 0.85; }
+
+    /* Tile grid */
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    @media (max-width: 1000px) { .tile-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .tile-grid { grid-template-columns: 1fr; } }
+
+    .tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      text-align: left;
+      padding: 0;
+      font-family: inherit;
+      color: var(--text);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .tile:hover { transform: translateY(-3px); border-color: var(--accent); }
+    .tile-image {
+      width: 100%; aspect-ratio: 16/9;
+      background-size: cover; background-position: center;
+      background-color: var(--surface);
+    }
+    .tile-label { padding: 0.9rem 1rem; }
+    .tile-name { font-size: 0.95rem; color: var(--accent); font-weight: 500; margin-bottom: 0.2rem; }
+    .tile-sub  { font-size: 0.8rem; opacity: 0.6; }
   </style>
 </head>
 <body>
-  <!-- No-brand landing -->
   <div class="landing" id="landing">
     <div>
       <h1>TRAVEL &amp; HOSPITALITY DEMO</h1>
@@ -122,7 +117,6 @@
     </div>
   </div>
 
-  <!-- Brand wizard -->
   <div class="wizard" id="wizard">
     <header class="brand-header">
       <div class="brand-info">
@@ -143,9 +137,9 @@
       </section>
 
       <section class="step" data-step="2">
-        <h2>Destination</h2>
-        <p>Coming next step</p>
-        <button class="cta" onclick="advance()">Next</button>
+        <h2 id="dest-title">Destination</h2>
+        <p class="prompt" id="dest-prompt">Choose your destination</p>
+        <div class="tile-grid" id="dest-grid"></div>
       </section>
 
       <section class="step" data-step="3">
@@ -184,6 +178,7 @@
     const demoKey = new URLSearchParams(window.location.search).get('demo');
     let currentStep = 1;
     const totalSteps = 7;
+    window.WIZARD_STATE = {};
 
     function showStep(n) {
       document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
@@ -192,7 +187,29 @@
       document.getElementById('step-pill').textContent = `Step ${currentStep} of ${totalSteps}`;
     }
     function advance() { if (currentStep < totalSteps) showStep(currentStep + 1); }
-    function restart() { showStep(1); }
+    function restart() {
+      window.WIZARD_STATE = {};
+      showStep(1);
+    }
+
+    function selectDestination(value) {
+      window.WIZARD_STATE.location = value;
+      advance();
+    }
+
+    function renderDestinations(cfg) {
+      const grid = document.getElementById('dest-grid');
+      if (!cfg.destinations) return;
+      grid.innerHTML = cfg.destinations.map(d => `
+        <button class="tile" data-value="${d.value}" onclick="selectDestination('${d.value.replace(/'/g, "\\'")}')">
+          <div class="tile-image" style="background-image: url('${d.image}'), linear-gradient(135deg, #1a2c44, #0E1B2C);"></div>
+          <div class="tile-label">
+            <div class="tile-name">${d.value}</div>
+            <div class="tile-sub">${d.sublabel}</div>
+          </div>
+        </button>
+      `).join('');
+    }
 
     if (demoKey) {
       const script = document.createElement('script');
@@ -211,6 +228,13 @@
         document.getElementById('brand-name').textContent = cfg.brand.name.toUpperCase();
         document.getElementById('brand-tagline').textContent = cfg.brand.tagline;
         document.getElementById('welcome-headline').textContent = cfg.brand.headline;
+
+        if (cfg.stepLabels && cfg.stepLabels.destination) {
+          document.getElementById('dest-title').textContent = cfg.stepLabels.destination.title;
+          document.getElementById('dest-prompt').textContent = cfg.stepLabels.destination.prompt;
+        }
+
+        renderDestinations(cfg);
 
         document.body.classList.add('wizard-mode');
       };
