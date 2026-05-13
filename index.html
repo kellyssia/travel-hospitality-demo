@@ -4,14 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Travel & Hospitality Demo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --bg: #0E1B2C;
       --surface: #16263B;
       --accent: #C9A961;
+      --accent-rgb: 201, 169, 97;
       --text: #F0E9DD;
       --text-muted: #9AA4B0;
       --border: #243447;
+      --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     * { box-sizing: border-box; }
     body {
@@ -19,10 +27,11 @@
       min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      transition: background 0.4s ease, color 0.4s ease;
+      font-family: var(--sans);
+      transition: background 0.6s ease, color 0.6s ease;
     }
 
+    /* Landing */
     .landing {
       display: flex; align-items: center; justify-content: center;
       min-height: 100vh; padding: 2rem; text-align: center;
@@ -34,6 +43,7 @@
     .landing p { opacity: 0.6; margin: 0; }
     .landing code { color: var(--accent); }
 
+    /* Wizard mode */
     .wizard { display: none; }
     body.wizard-mode .landing { display: none; }
     body.wizard-mode .wizard { display: block; }
@@ -46,7 +56,10 @@
       color: var(--accent); letter-spacing: 0.3em; font-weight: 300;
       margin: 0 0 0.25rem; font-size: 1.1rem;
     }
-    .brand-info .tagline { opacity: 0.6; font-style: italic; margin: 0; font-size: 0.85rem; }
+    .brand-info .tagline {
+      font-family: var(--serif);
+      font-style: italic; opacity: 0.6; margin: 0; font-size: 0.95rem;
+    }
     .header-status { display: flex; gap: 0.5rem; }
     .status-pill {
       background: var(--surface); border: 1px solid var(--border);
@@ -56,47 +69,47 @@
     }
     .status-pill.muted { color: var(--text-muted); }
 
-    main.steps { padding: 2.5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    main.steps { padding: 2.5rem 2rem 4rem; max-width: 1100px; margin: 0 auto; }
     .step { display: none; text-align: center; padding: 1rem 0; }
     .step.active { display: block; }
     .step h2 {
-      color: var(--accent); font-weight: 300;
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      letter-spacing: 0.05em; margin: 0 0 0.5rem;
+      font-family: var(--serif);
+      color: var(--text); font-weight: 300;
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      letter-spacing: 0.01em; margin: 0 0 0.5rem;
     }
-    .step .prompt { opacity: 0.6; margin: 0 0 2rem; font-size: 0.95rem; letter-spacing: 0.1em; text-transform: uppercase; }
-    .step p { opacity: 0.8; font-size: 1.05rem; margin: 0 0 2.5rem; }
+    .step .prompt {
+      opacity: 0.45; margin: 0 0 2.5rem;
+      font-size: 0.75rem; letter-spacing: 0.35em; text-transform: uppercase;
+    }
+    .step > p {
+      font-family: var(--serif); font-style: italic;
+      opacity: 0.7; font-size: 1.1rem; margin: 0 0 2.5rem;
+    }
 
     .cta {
       background: var(--accent); color: var(--bg); border: none;
-      padding: 1rem 3rem; font-size: 0.9rem;
-      letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
-      border-radius: 4px; font-weight: 600; transition: opacity 0.2s ease;
+      padding: 1rem 3.5rem; font-size: 0.8rem;
+      letter-spacing: 0.3em; text-transform: uppercase; cursor: pointer;
+      border-radius: 2px; font-weight: 500;
+      font-family: var(--sans);
+      transition: opacity 0.2s ease, transform 0.2s ease;
     }
-    .cta:hover { opacity: 0.85; }
+    .cta:hover { opacity: 0.9; transform: translateY(-1px); }
 
-    /* Tile grid */
+    /* Destinations grid */
     .tile-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      max-width: 1000px;
-      margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; max-width: 1000px; margin: 0 auto;
     }
     @media (max-width: 1000px) { .tile-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 600px)  { .tile-grid { grid-template-columns: 1fr; } }
-
     .tile {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      text-align: left;
-      padding: 0;
-      font-family: inherit;
-      color: var(--text);
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; overflow: hidden; cursor: pointer;
+      text-align: left; padding: 0;
+      font-family: inherit; color: var(--text);
+      transition: transform 0.3s ease, border-color 0.3s ease;
     }
     .tile:hover { transform: translateY(-3px); border-color: var(--accent); }
     .tile-image {
@@ -105,8 +118,134 @@
       background-color: var(--surface);
     }
     .tile-label { padding: 0.9rem 1rem; }
-    .tile-name { font-size: 0.95rem; color: var(--accent); font-weight: 500; margin-bottom: 0.2rem; }
-    .tile-sub  { font-size: 0.8rem; opacity: 0.6; }
+    .tile-name {
+      font-family: var(--serif);
+      font-size: 1.05rem; color: var(--accent); font-weight: 400; margin-bottom: 0.2rem;
+    }
+    .tile-sub { font-size: 0.75rem; opacity: 0.5; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* ─── BUDGET STEP — luxury hero treatment ─── */
+    .budget-stage {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1rem 1rem;
+    }
+    .budget-currency {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(2.5rem, 6vw, 3.5rem);
+      color: var(--accent);
+      opacity: 0.6;
+      vertical-align: top;
+      line-height: 1;
+      margin-right: 0.15em;
+    }
+    .budget-amount {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(4.5rem, 13vw, 8rem);
+      color: var(--accent);
+      letter-spacing: -0.025em;
+      line-height: 1;
+      font-feature-settings: "tnum";
+      display: inline-block;
+    }
+    .budget-caption {
+      font-size: 0.7rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin: 1rem 0 0.5rem;
+    }
+    .budget-tier {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+      color: var(--text);
+      opacity: 0.85;
+      margin: 0 0 3.5rem;
+      letter-spacing: 0.01em;
+      transition: opacity 0.25s ease;
+      min-height: 1.5em;
+    }
+
+    .slider-wrap {
+      max-width: 560px;
+      margin: 0 auto 3rem;
+      padding: 0 0.5rem;
+    }
+    .budget-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 28px;
+      background: transparent;
+      outline: none;
+      cursor: grab;
+      margin: 0;
+      padding: 0;
+    }
+    .budget-slider:active { cursor: grabbing; }
+
+    .budget-slider::-webkit-slider-runnable-track {
+      height: 1px;
+      background: linear-gradient(to right, rgba(var(--accent-rgb), 0.5) 0%, rgba(var(--accent-rgb), 0.5) var(--pct, 0%), var(--border) var(--pct, 0%), var(--border) 100%);
+      border: none;
+    }
+    .budget-slider::-moz-range-track {
+      height: 1px;
+      background: var(--border);
+      border: none;
+    }
+    .budget-slider::-moz-range-progress {
+      height: 1px;
+      background: rgba(var(--accent-rgb), 0.5);
+    }
+
+    .budget-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+      margin-top: -7px;
+      cursor: grab;
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.4),
+                  0 0 0 6px rgba(var(--accent-rgb), 0.08);
+      transition: box-shadow 0.25s ease, transform 0.15s ease;
+    }
+    .budget-slider:hover::-webkit-slider-thumb,
+    .budget-slider:focus::-webkit-slider-thumb {
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.6),
+                  0 0 0 12px rgba(var(--accent-rgb), 0.12);
+      transform: scale(1.1);
+    }
+    .budget-slider::-moz-range-thumb {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+      cursor: grab;
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.4),
+                  0 0 0 6px rgba(var(--accent-rgb), 0.08);
+      transition: box-shadow 0.25s ease, transform 0.15s ease;
+    }
+    .budget-slider:hover::-moz-range-thumb,
+    .budget-slider:focus::-moz-range-thumb {
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.6),
+                  0 0 0 12px rgba(var(--accent-rgb), 0.12);
+      transform: scale(1.1);
+    }
+
+    .slider-rail-labels {
+      display: flex; justify-content: space-between;
+      margin-top: 1rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.35;
+    }
   </style>
 </head>
 <body>
@@ -138,14 +277,32 @@
 
       <section class="step" data-step="2">
         <h2 id="dest-title">Destination</h2>
-        <p class="prompt" id="dest-prompt">Choose your destination</p>
+        <div class="prompt" id="dest-prompt">Choose your destination</div>
         <div class="tile-grid" id="dest-grid"></div>
       </section>
 
       <section class="step" data-step="3">
-        <h2>Budget per night</h2>
-        <p>Coming soon</p>
-        <button class="cta" onclick="advance()">Next</button>
+        <h2 id="budget-title">What's your nightly budget?</h2>
+        <div class="prompt" id="budget-prompt">Slide to set the rate</div>
+
+        <div class="budget-stage">
+          <div>
+            <span class="budget-currency" id="budget-currency">$</span><span class="budget-amount" id="budget-amount">3,000</span>
+          </div>
+          <div class="budget-caption" id="budget-caption">per night</div>
+          <div class="budget-tier" id="budget-tier">Signature Suite</div>
+
+          <div class="slider-wrap">
+            <input type="range" id="budget-slider" class="budget-slider"
+                   min="500" max="50000" step="100" value="3000">
+            <div class="slider-rail-labels">
+              <span id="budget-min-label">$500</span>
+              <span id="budget-max-label">$50,000+</span>
+            </div>
+          </div>
+
+          <button class="cta" onclick="commitBudget()">Continue</button>
+        </div>
       </section>
 
       <section class="step" data-step="4">
@@ -187,10 +344,7 @@
       document.getElementById('step-pill').textContent = `Step ${currentStep} of ${totalSteps}`;
     }
     function advance() { if (currentStep < totalSteps) showStep(currentStep + 1); }
-    function restart() {
-      window.WIZARD_STATE = {};
-      showStep(1);
-    }
+    function restart() { window.WIZARD_STATE = {}; showStep(1); }
 
     function selectDestination(value) {
       window.WIZARD_STATE.location = value;
@@ -201,7 +355,7 @@
       const grid = document.getElementById('dest-grid');
       if (!cfg.destinations) return;
       grid.innerHTML = cfg.destinations.map(d => `
-        <button class="tile" data-value="${d.value}" onclick="selectDestination('${d.value.replace(/'/g, "\\'")}')">
+        <button class="tile" onclick="selectDestination('${d.value.replace(/'/g, "\\'")}')">
           <div class="tile-image" style="background-image: url('${d.image}'), linear-gradient(135deg, #1a2c44, #0E1B2C);"></div>
           <div class="tile-label">
             <div class="tile-name">${d.value}</div>
@@ -209,6 +363,51 @@
           </div>
         </button>
       `).join('');
+    }
+
+    function getBudgetTier(amount, tiers) {
+      return (tiers.find(t => amount <= t.max) || tiers[tiers.length - 1]).name;
+    }
+
+    function setupBudget(cfg) {
+      if (!cfg.budget) return;
+      const b = cfg.budget;
+      const slider = document.getElementById('budget-slider');
+      const amount = document.getElementById('budget-amount');
+      const tierEl = document.getElementById('budget-tier');
+      const currencyEl = document.getElementById('budget-currency');
+      const captionEl = document.getElementById('budget-caption');
+      const minLabel = document.getElementById('budget-min-label');
+      const maxLabel = document.getElementById('budget-max-label');
+
+      slider.min = b.min; slider.max = b.max; slider.step = b.step; slider.value = b.initial;
+      currencyEl.textContent = b.currency;
+      captionEl.textContent = cfg.stepLabels.budget.perNight;
+      minLabel.textContent = `${b.currency}${b.min.toLocaleString()}`;
+      maxLabel.textContent = `${b.currency}${b.max.toLocaleString()}+`;
+
+      function update() {
+        const v = parseInt(slider.value, 10);
+        amount.textContent = v.toLocaleString();
+        const newTier = getBudgetTier(v, b.tiers);
+        if (tierEl.textContent !== newTier) {
+          tierEl.style.opacity = '0';
+          setTimeout(() => { tierEl.textContent = newTier; tierEl.style.opacity = '0.85'; }, 180);
+        }
+        const pct = ((v - b.min) / (b.max - b.min)) * 100;
+        slider.style.setProperty('--pct', pct + '%');
+      }
+
+      slider.addEventListener('input', update);
+      update();
+    }
+
+    function commitBudget() {
+      const v = parseInt(document.getElementById('budget-slider').value, 10);
+      const cfg = window.BRAND_CONFIG;
+      window.WIZARD_STATE.budget = v;
+      window.WIZARD_STATE.budgetTier = getBudgetTier(v, cfg.budget.tiers);
+      advance();
     }
 
     if (demoKey) {
@@ -229,12 +428,17 @@
         document.getElementById('brand-tagline').textContent = cfg.brand.tagline;
         document.getElementById('welcome-headline').textContent = cfg.brand.headline;
 
-        if (cfg.stepLabels && cfg.stepLabels.destination) {
+        if (cfg.stepLabels?.destination) {
           document.getElementById('dest-title').textContent = cfg.stepLabels.destination.title;
           document.getElementById('dest-prompt').textContent = cfg.stepLabels.destination.prompt;
         }
+        if (cfg.stepLabels?.budget) {
+          document.getElementById('budget-title').textContent = cfg.stepLabels.budget.title;
+          document.getElementById('budget-prompt').textContent = cfg.stepLabels.budget.prompt;
+        }
 
         renderDestinations(cfg);
+        setupBudget(cfg);
 
         document.body.classList.add('wizard-mode');
       };
