@@ -8,6 +8,7 @@
   const DEFAULT_RELAY_URL = "wss://real-estate-live-demo.onrender.com/ws";
   const HEARTBEAT_INTERVAL_MS = 15000;
   const MAX_RECONNECT_DELAY_MS = 30000;
+  const DEBUG = true; // set false to silence console logs
 
   let ws = null;
   let reconnectAttempts = 0;
@@ -15,6 +16,10 @@
   let heartbeatTimer = null;
   let relayUrl = DEFAULT_RELAY_URL;
   let statusListener = null;
+
+  function log(...args) { if (DEBUG) console.log('[WS]', ...args); }
+  function logOut(envelope) { if (DEBUG) console.log('%c[WS →]', 'color:#C9A961', envelope.eventType, envelope); }
+  function logIn(data) { if (DEBUG) console.log('%c[WS ←]', 'color:#9AA4B0', data); }
 
   function getOrCreateDeviceId() {
     let id = localStorage.getItem('demoDeviceId');
@@ -43,35 +48,42 @@
 
     if (ws && (ws.readyState === WebSocket.CONNECTING || ws.readyState === WebSocket.OPEN)) return;
 
+    log('connecting to', relayUrl);
     setStatus('connecting');
 
     try {
       ws = new WebSocket(relayUrl);
     } catch (e) {
-      console.warn('WebSocket constructor failed:', e);
+      console.warn('[WS] constructor failed:', e);
       scheduleReconnect();
       return;
     }
 
     ws.onopen = () => {
       reconnectAttempts = 0;
+      log('connected ✓');
       setStatus('connected');
       send('presence');
       startHeartbeat();
     };
-    ws.onclose = () => {
+    ws.onclose = (e) => {
       stopHeartbeat();
+      log('closed', e.code, e.reason);
       setStatus('offline');
       scheduleReconnect();
     };
-    ws.onerror = () => { /* onclose will fire */ };
-    ws.onmessage = () => { /* relay hello / relay:connected ignored */ };
+    ws.onerror = (e) => { log('error', e); };
+    ws.onmessage = (event) => {
+      logIn(event.data);
+      // Relay's hello / relay:connected messages ignored on the app side
+    };
   }
 
   function scheduleReconnect() {
     if (reconnectTimer) return;
     const delay = Math.min(MAX_RECONNECT_DELAY_MS, 1000 * Math.pow(2, reconnectAttempts));
     reconnectAttempts++;
+    log('reconnecting in', delay, 'ms (attempt', reconnectAttempts + ')');
     reconnectTimer = setTimeout(() => { reconnectTimer = null; connect(); }, delay);
   }
 
@@ -84,7 +96,10 @@
   }
 
   function send(eventType, payload) {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      if (DEBUG) console.warn('[WS →] skipped (socket not open):', eventType);
+      return;
+    }
     const cfg = window.BRAND_CONFIG;
     const envelope = Object.assign({
       type: 'event',
@@ -96,8 +111,11 @@
       timestamp: Date.now()
     }, payload || {});
 
-    try { ws.send(JSON.stringify(envelope)); }
-    catch (e) { console.warn('WebSocket send failed:', e); }
+    try {
+      ws.send(JSON.stringify(envelope));
+      logOut(envelope);
+    }
+    catch (e) { console.warn('[WS] send failed:', e); }
   }
 
   window.addEventListener('beforeunload', () => {
