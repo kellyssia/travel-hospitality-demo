@@ -107,6 +107,8 @@
     .photo-circle { width: 88px; height: 88px; border-radius: 50%; border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); background-size: cover; background-position: center; transition: border-color 0.3s ease, color 0.3s ease; }
     .photo-label:hover .photo-circle { border-color: var(--accent); color: var(--accent); }
     .photo-circle.has-photo { border-style: solid; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.1); }
+    .photo-circle.uploading { border-style: dashed; border-color: var(--accent); animation: pulse 1.2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
     .photo-circle.has-photo .photo-icon { display: none; }
     .photo-text { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.5; }
     .register-submit { margin-top: 1rem; text-align: center; }
@@ -249,6 +251,12 @@
     const totalSteps = 7;
     window.WIZARD_STATE = {};
 
+    // Convert a wss://host/ws URL into the matching https://host base for HTTP endpoints
+    function relayHttpBase(wsUrl) {
+      if (!wsUrl) return '';
+      return wsUrl.replace(/^wss:/, 'https:').replace(/^ws:/, 'http:').replace(/\/ws$/, '');
+    }
+
     function showStep(n) {
       const prev = document.querySelector(`.step[data-step="${currentStep}"]`);
       if (prev) prev.classList.remove('active');
@@ -265,7 +273,7 @@
       const form = document.getElementById('register-form');
       if (form) form.reset();
       const preview = document.getElementById('photo-preview');
-      if (preview) { preview.style.backgroundImage = ''; preview.classList.remove('has-photo'); }
+      if (preview) { preview.style.backgroundImage = ''; preview.classList.remove('has-photo', 'uploading'); }
       const photoText = document.getElementById('photo-text');
       if (photoText) photoText.textContent = 'Add a photo — optional';
       showStep(1);
@@ -389,22 +397,45 @@
       const preview = document.getElementById('photo-preview');
       const photoText = document.getElementById('photo-text');
       const submitBtn = document.getElementById('register-submit-btn');
+      const uploadUrl = relayHttpBase(cfg.relayUrl) + '/upload';
 
       if (cfg.stepLabels?.register?.submit) {
         submitBtn.textContent = cfg.stepLabels.register.submit;
       }
 
-      photoInput.addEventListener('change', (e) => {
+      photoInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
+
+        // 1. Show local preview immediately (no waiting)
         const reader = new FileReader();
         reader.onload = (ev) => {
           preview.style.backgroundImage = `url('${ev.target.result}')`;
-          preview.classList.add('has-photo');
-          photoText.textContent = 'Tap to change';
-          window.WIZARD_STATE.photo = ev.target.result;
+          preview.classList.add('has-photo', 'uploading');
+          photoText.textContent = 'Uploading…';
         };
         reader.readAsDataURL(file);
+
+        // 2. Upload to relay in background
+        try {
+          const formData = new FormData();
+          formData.append('photo', file);
+          formData.append('sessionId', sessionStorage.getItem('demoSessionId') || '');
+
+          const response = await fetch(uploadUrl, { method: 'POST', body: formData });
+          if (!response.ok) throw new Error(`Upload failed: ${response.status}`);
+          const data = await response.json();
+
+          // 3. Store the URL (not the base64) for later transmission
+          window.WIZARD_STATE.photo = data.photoUrl;
+          preview.classList.remove('uploading');
+          photoText.textContent = 'Tap to change';
+        } catch (err) {
+          console.error('Photo upload failed:', err);
+          preview.classList.remove('uploading');
+          photoText.textContent = 'Upload failed — tap to retry';
+          delete window.WIZARD_STATE.photo;
+        }
       });
     }
 
@@ -515,7 +546,6 @@
 
         document.body.classList.add('wizard-mode');
 
-        // Connect to the relay and emit step_view for step 1
         if (window.WS_CLIENT) {
           window.WS_CLIENT.connect({
             relayUrl: cfg.relayUrl,
